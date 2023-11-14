@@ -1,0 +1,46 @@
+version: '3.1'
+
+services:
+
+  wordpress:
+    build: .
+    container_name: wp_website
+    restart: always
+    ports:
+      - 8080:80
+
+    
+    env_file:
+      - .env
+        
+    volumes:
+      - wordpress:/var/www/html
+     # - ./theme:/wp-content/themes/custom-theme/
+      #- ./custom-plugin:/wp-content/plugins/custom-plugin/
+    depends_on:
+      - db    
+      
+      
+  db:
+    image: mariadb:latest
+    restart: always
+    container_name: wp_database
+    
+    env_file:
+      - .env
+      
+    volumes:
+      - db:/var/lib/mysql
+
+  adminer:
+    container_name: wp_database-admin
+    image: adminer
+    restart: always
+    ports:
+      - 8081:8080
+    depends_on:
+      - db    
+
+volumes:
+  wordpress:
+  db:
